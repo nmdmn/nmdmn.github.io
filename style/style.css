@@ -1,6 +1,9 @@
 :root {
-    --color-light: #EEE;
-    --color-dark: #111;
+    --color-light_white: #DCCCA3;
+    --color-light_green: #90AA86;
+    --color-light_purple: #824C71;
+    --color-dark_black: #000014;
+    --color-dark_purple: #4A2545;
     --default-font-size: 16px;
     --default-font-family: Helvetica;
 }
