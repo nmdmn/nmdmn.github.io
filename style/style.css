@@ -1,0 +1,15 @@
+:root {
+    --color-light: #EEE;
+    --color-dark: #111;
+    --default-font-size: 16px;
+    --default-font-family: Helvetica;
+}
+
+
+* {
+    font-size: var(--default-font-size);
+    font-family: var(--default-font-family);
+    color: var(--color-light);
+    background-color: var(--color-dark);
+    margin: 0;
+}
