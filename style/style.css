@@ -15,4 +15,9 @@
     color: var(--color-light);
     background-color: var(--color-dark);
     margin: 0;
+    overflow: hidden;
+}
+
+canvas {
+    background-color: var(--color-dark_black);
 }
