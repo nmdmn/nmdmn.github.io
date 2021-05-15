@@ -9,7 +9,7 @@ $(document).ready(() => {
     let bound = refresh_canvas_size(window.innerWidth, window.innerHeight);
 
     //create random particles (random pos constrained by the canvas dimensions called 'bound')
-    const particles = particle.spawn(53, bound);
+    const particles = particle.spawn(13, bound);
 
     //save time for later calculating dT
     let last = Date.now();

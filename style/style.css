@@ -1,9 +1,9 @@
 :root {
-    --color-light_white: #DCCCA3;
-    --color-light_green: #90AA86;
-    --color-light_purple: #824C71;
-    --color-dark_black: #000014;
-    --color-dark_purple: #4A2545;
+    --color-light-white: #DCCCA3;
+    --color-light-green: #90AA86;
+    --color-light-purple: #824C71;
+    --color-dark-black: #000014;
+    --color-dark-purple: #4A2545;
     --default-font-size: 16px;
     --default-font-family: Helvetica;
 }
@@ -12,12 +12,12 @@
 * {
     font-size: var(--default-font-size);
     font-family: var(--default-font-family);
-    color: var(--color-light);
-    background-color: var(--color-dark);
+    color: var(--color-light-white);
     margin: 0;
-    overflow: hidden;
+    padding: 0;
 }
 
 canvas {
-    background-color: var(--color-dark_black);
+    display: block;
+    background-color: var(--color-dark-black);
 }

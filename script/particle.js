@@ -15,8 +15,8 @@ class particle {
 
     //set new postition for draw
     update(delta_time) {
-        //const distorted_vel = vector.mul(this.velocity, delta_time);
-        //this.position.add(distorted_vel);
+        const distorted_vel = vector.mul(this.velocity, delta_time);
+        this.position.add(distorted_vel);
 
     }
 
@@ -50,6 +50,26 @@ class particle {
                 this.position.add(vector.mul(direction, overlap / 2));
                 direction.flip();
                 other.position.add(vector.mul(direction, overlap / 2));
+
+                let mass_coeff = 2 * other.mass / (this.mass + other.mass);
+                let velocity_diff = vector.sub(this.velocity, other.velocity);
+                let position_diff = vector.sub(this.position, other.position);
+                const distance = position_diff.length();
+                let dot_prod = vector.dot(velocity_diff, position_diff);
+                position_diff.norm();
+                position_diff.mul(mass_coeff * (dot_prod / (distance * distance)));
+                const new_velocity = vector.sub(this.velocity, position_diff);
+
+                mass_coeff = 2 * this.mass / (this.mass + other.mass);
+                velocity_diff = vector.sub(other.velocity, this.velocity);
+                position_diff = vector.sub(other.position, this.position);
+                dot_prod = vector.dot(velocity_diff, position_diff);
+                position_diff.norm();
+                position_diff.mul(mass_coeff * (dot_prod / (distance * distance)));
+                const other_new_velocity = vector.sub(other.velocity, position_diff);
+
+                this.velocity = new_velocity;
+                other.velocity = other_new_velocity;
             }
         });
     }
@@ -59,7 +79,7 @@ class particle {
         context.beginPath();
 
         context.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
-        context.strokeStyle = $("body").css("--color-light_white");
+        context.strokeStyle = $("body").css("--color-light-white");
         context.lineWidth = 1.5;
 
         context.arc(this.position.x, this.position.y, this.size, 0, 2 * Math.PI);
