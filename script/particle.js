@@ -1,6 +1,7 @@
 //represent an entity in the system,
 //encapsulate position, velocity and mass
 class particle {
+    static sid = 0;
     constructor(position, velocity, size) {
         this.position = position;
         this.velocity = velocity;
@@ -12,6 +13,7 @@ class particle {
         };
         this.mass = this.size * this.size;
         this.isCollide = false;
+        this.id = particle.sid++;
     }
 
     //set new postition for draw
@@ -43,7 +45,10 @@ class particle {
     //calculate new velocities if ballz colliding + static resolution
     //XXX BUGGY AF
     collide(particles) {
-        this.isCollide = false;
+        particles.forEach((p) => {
+            p.isCollide = false;
+        });
+
         particles.forEach((other) => {
             let direction_from_other = vector.sub(this.position, other.position);
             let distance = vector.length(direction_from_other);
@@ -51,26 +56,35 @@ class particle {
             let overlap = sum_radius - distance;
             if (distance != 0 && overlap > 0) {
                 this.isCollide = true;
+                other.isCollide = true;
 
                 let correct_unit_dir = vector.norm(direction_from_other);
                 this.position = vector.add(this.position, vector.mul(correct_unit_dir, overlap / 2));
                 other.position = vector.add(other.position, vector.mul(vector.flip(correct_unit_dir), overlap / 2));
 
                 let mass_coeff = 2 * other.mass / (this.mass + other.mass);
+                if (mass_coeff > 1.5) {
+                    mass_coeff = 1.5;
+                }
+
                 let velocity_diff = vector.sub(this.velocity, other.velocity);
                 let position_diff = vector.sub(this.position, other.position);
                 let dot_prod = vector.dot(velocity_diff, position_diff);
+                distance = vector.length(position_diff);
                 let coeff = dot_prod / (distance * distance) * mass_coeff;
-                let unit_dir = vector.norm(position_diff);
-                let new_velocity = vector.sub(this.velocity, vector.mul(unit_dir, coeff));
+                let new_velocity = vector.sub(this.velocity, vector.mul(position_diff, coeff));
 
                 mass_coeff = 2 * this.mass / (this.mass + other.mass);
+                if (mass_coeff > 1.5) {
+                    mass_coeff = 1.5;
+                }
+
                 velocity_diff = vector.sub(other.velocity, this.velocity);
                 position_diff = vector.sub(other.position, this.position);
                 dot_prod = vector.dot(velocity_diff, position_diff);
+                distance = vector.length(position_diff);
                 coeff = dot_prod / (distance * distance) * mass_coeff;
-                unit_dir = vector.norm(position_diff);
-                let new_velocity2 = vector.sub(other.velocity, vector.mul(unit_dir, coeff));
+                let new_velocity2 = vector.sub(other.velocity, vector.mul(position_diff, coeff));
 
                 this.velocity = new_velocity;
                 other.velocity = new_velocity2;
@@ -105,11 +119,13 @@ class particle {
                 x: random.range(size, bound.width - size),
                 y: random.range(size, bound.height - size)
             };
+
             const speed = random.range(1, 42);
             let velocity = {
                 x: random.range(-1, 1),
                 y: random.range(-1, 1)
             };
+
             velocity = vector.norm(velocity);
             velocity = vector.mul(velocity, 89 / size * speed);
 
