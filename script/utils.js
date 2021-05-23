@@ -11,67 +11,50 @@ class random {
 
 //helper class for dealing with linear algebra
 class vector {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    //addition
-    add(other) {
-        this.x += other.x;
-        this.y += other.y;
-    }
-
-    //subtraction
-    sub(other) {
-        this.x -= other.x;
-        this.y -= other.y;
-    }
-
-    //multiplication
-    mul(skalar) {
-        this.x *= skalar;
-        this.y *= skalar;
-    }
-
     //opposite direction
-    flip() {
-        let tmp = this.x
-        this.x = -this.y;
-        this.y = tmp;
+    static flip(v) {
+        return {
+            x: -v.y,
+            y: v.x
+        };
     }
 
     //lenght, or magnitude as you like
-    length() {
-        return Math.sqrt(this.x * this.x + this.y * this.y);
+    static length(v) {
+        return Math.sqrt(v.x * v.x + v.y * v.y);
     }
 
     //normalize the vector
-    norm() {
-        const length = this.length();
-        this.mul(1 / length);
-    }
-
-    //copy myself
-    copy() {
-        return new vector(this.x, this.y);
+    static norm(v) {
+        const length = vector.length(v);
+        return vector.mul(v, 1 / length);
     }
 
     //add 2 vector
     static add(lhs, rhs) {
-        return new vector(lhs.x + rhs.x, lhs.y + rhs.y);
+        return {
+            x: lhs.x + rhs.x,
+            y: lhs.y + rhs.y
+        };
     }
 
     //subtract 2 vector
     static sub(lhs, rhs) {
-        return new vector(lhs.x - rhs.x, lhs.y - rhs.y);
+        return {
+            x: lhs.x - rhs.x,
+            y: lhs.y - rhs.y
+        };
     }
 
     //multiply a vector with a skalar
-    static mul(lhs, rhs) {
-        return new vector(lhs.x * rhs, lhs.y * rhs);
+    static mul(v, sk) {
+        return {
+            x: v.x * sk,
+            y: v.y * sk
+        };
     }
 
+    //dot product of lhs and rhs
     static dot(lhs, rhs) {
         return lhs.x * rhs.x + lhs.y * rhs.y;
     }

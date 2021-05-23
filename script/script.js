@@ -35,9 +35,9 @@ $(document).ready(() => {
 
         //update and draw all particles
         particles.forEach((particle) => {
-            particle.update(delta * to_seconds);
             particle.check_edges(bound.width, bound.height);
             particle.collide(particles);
+            particle.update(delta * to_seconds);
             particle.draw(context);
         });
 

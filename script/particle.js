@@ -11,12 +11,13 @@ class particle {
             b: random.range(0, 255)
         };
         this.mass = this.size * this.size;
+        this.isCollide = false;
     }
 
     //set new postition for draw
     update(delta_time) {
         const distorted_vel = vector.mul(this.velocity, delta_time);
-        this.position.add(distorted_vel);
+        this.position = vector.add(this.position, distorted_vel);
 
     }
 
@@ -39,37 +40,40 @@ class particle {
         }
     }
 
+    //calculate new velocities if ballz colliding + static resolution
+    //XXX BUGGY AF
     collide(particles) {
+        this.isCollide = false;
         particles.forEach((other) => {
-            const direction = vector.sub(this.position, other.position);
-            const distance = direction.length();
-            const sum_radius = this.size + other.size;
-            const overlap = sum_radius - distance;
+            let direction_from_other = vector.sub(this.position, other.position);
+            let distance = vector.length(direction_from_other);
+            let sum_radius = this.size + other.size + 1;
+            let overlap = sum_radius - distance;
             if (distance != 0 && overlap > 0) {
-                direction.norm();
-                this.position.add(vector.mul(direction, overlap / 2));
-                direction.flip();
-                other.position.add(vector.mul(direction, overlap / 2));
+                this.isCollide = true;
+
+                let correct_unit_dir = vector.norm(direction_from_other);
+                this.position = vector.add(this.position, vector.mul(correct_unit_dir, overlap / 2));
+                other.position = vector.add(other.position, vector.mul(vector.flip(correct_unit_dir), overlap / 2));
 
                 let mass_coeff = 2 * other.mass / (this.mass + other.mass);
                 let velocity_diff = vector.sub(this.velocity, other.velocity);
                 let position_diff = vector.sub(this.position, other.position);
-                const distance = position_diff.length();
                 let dot_prod = vector.dot(velocity_diff, position_diff);
-                position_diff.norm();
-                position_diff.mul(mass_coeff * (dot_prod / (distance * distance)));
-                const new_velocity = vector.sub(this.velocity, position_diff);
+                let coeff = dot_prod / (distance * distance) * mass_coeff;
+                let unit_dir = vector.norm(position_diff);
+                let new_velocity = vector.sub(this.velocity, vector.mul(unit_dir, coeff));
 
                 mass_coeff = 2 * this.mass / (this.mass + other.mass);
                 velocity_diff = vector.sub(other.velocity, this.velocity);
                 position_diff = vector.sub(other.position, this.position);
                 dot_prod = vector.dot(velocity_diff, position_diff);
-                position_diff.norm();
-                position_diff.mul(mass_coeff * (dot_prod / (distance * distance)));
-                const other_new_velocity = vector.sub(other.velocity, position_diff);
+                coeff = dot_prod / (distance * distance) * mass_coeff;
+                unit_dir = vector.norm(position_diff);
+                let new_velocity2 = vector.sub(other.velocity, vector.mul(unit_dir, coeff));
 
                 this.velocity = new_velocity;
-                other.velocity = other_new_velocity;
+                other.velocity = new_velocity2;
             }
         });
     }
@@ -79,6 +83,10 @@ class particle {
         context.beginPath();
 
         context.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
+        if (this.isCollide) {
+            context.fillStyle = `rgb(${255}, ${0}, ${0})`;
+        }
+
         context.strokeStyle = $("body").css("--color-light-white");
         context.lineWidth = 1.5;
 
@@ -93,17 +101,17 @@ class particle {
         const particles = [];
         for (let i = 0; i < num_particle; i++) {
             const size = random.range(9, 89);
-            const position = new vector(
-                random.range(size, bound.width - size),
-                random.range(size, bound.height - size)
-            );
+            const position = {
+                x: random.range(size, bound.width - size),
+                y: random.range(size, bound.height - size)
+            };
             const speed = random.range(1, 42);
-            const velocity = new vector(
-                random.range(-1, 1),
-                random.range(-1, 1)
-            );
-            velocity.norm();
-            velocity.mul(89 / size * speed);
+            let velocity = {
+                x: random.range(-1, 1),
+                y: random.range(-1, 1)
+            };
+            velocity = vector.norm(velocity);
+            velocity = vector.mul(velocity, 89 / size * speed);
 
             particles.push(new particle(position, velocity, size));
         }
