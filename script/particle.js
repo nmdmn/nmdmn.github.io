@@ -2,9 +2,10 @@
 //encapsulate position, velocity and mass
 class particle {
     static sid = 0;
-    constructor(position, velocity, size) {
+    constructor(position, velocity, acceleration, size) {
         this.position = position;
         this.velocity = velocity;
+        this.acceleration = acceleration;
         this.size = size;
         this.color = {
             r: random.range(0, 255),
@@ -18,9 +19,32 @@ class particle {
 
     //set new postition for draw
     update(delta_time) {
+        if (vector.length(this.acceleration) > 7) {
+            this.acceleration = vector.norm(this.acceleration);
+            this.acceleration = vector.mul(this.acceleration, 7);
+        }
+
+        this.velocity = vector.add(this.velocity, this.acceleration);
         const distorted_vel = vector.mul(this.velocity, delta_time);
         this.position = vector.add(this.position, distorted_vel);
 
+        this.acceleration = {
+            x: 0,
+            y: 0
+        };
+
+    }
+
+    apply_gravity(particles) {
+        particles.forEach((other) => {
+            let direction_from_other = vector.sub(this.position, other.position);
+            let distance = vector.length(direction_from_other);
+            if (distance != 0) {
+                let force = this.mass * other.mass / (distance * distance);
+                let unit_separation = vector.norm(direction_from_other);
+                this.acceleration = vector.add(this.acceleration, vector.mul(unit_separation, -force));
+            }
+        });
     }
 
     //flip velocity at the edges of the screen
@@ -45,19 +69,12 @@ class particle {
     //calculate new velocities if ballz colliding + static resolution
     //XXX BUGGY AF
     collide(particles) {
-        particles.forEach((p) => {
-            p.isCollide = false;
-        });
-
         particles.forEach((other) => {
             let direction_from_other = vector.sub(this.position, other.position);
             let distance = vector.length(direction_from_other);
             let sum_radius = this.size + other.size + 1;
             let overlap = sum_radius - distance;
             if (distance != 0 && overlap > 0) {
-                this.isCollide = true;
-                other.isCollide = true;
-
                 let correct_unit_dir = vector.norm(direction_from_other);
                 this.position = vector.add(this.position, vector.mul(correct_unit_dir, overlap / 2));
                 other.position = vector.add(other.position, vector.mul(vector.flip(correct_unit_dir), overlap / 2));
@@ -97,10 +114,6 @@ class particle {
         context.beginPath();
 
         context.fillStyle = `rgb(${this.color.r}, ${this.color.g}, ${this.color.b})`;
-        if (this.isCollide) {
-            context.fillStyle = `rgb(${255}, ${0}, ${0})`;
-        }
-
         context.strokeStyle = $("body").css("--color-light-white");
         context.lineWidth = 1.5;
 
@@ -129,7 +142,11 @@ class particle {
             velocity = vector.norm(velocity);
             velocity = vector.mul(velocity, 89 / size * speed);
 
-            particles.push(new particle(position, velocity, size));
+            let acceleration = {
+                x: 0,
+                y: 1
+            };
+            particles.push(new particle(position, velocity, acceleration, size));
         }
 
         return particles;

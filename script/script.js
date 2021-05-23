@@ -37,6 +37,7 @@ $(document).ready(() => {
         particles.forEach((particle) => {
             particle.check_edges(bound.width, bound.height);
             particle.collide(particles);
+            particle.apply_gravity(particles);
             particle.update(delta * to_seconds);
             particle.draw(context);
         });
