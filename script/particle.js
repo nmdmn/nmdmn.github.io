@@ -42,7 +42,7 @@ class particle {
             if (distance != 0) {
                 let force = this.mass * other.mass / (distance * distance);
                 let unit_separation = vector.norm(direction_from_other);
-                this.acceleration = vector.add(this.acceleration, vector.mul(unit_separation, -force));
+                this.acceleration = vector.add(this.acceleration, vector.mul(unit_separation, -force * 0.25));
             }
         });
     }
