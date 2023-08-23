@@ -1,0 +1,2 @@
+*{box-sizing:border-box;scroll-behavior:smooth;margin:0;padding:0}body{width:100vw;height:100vh;max-height:100vh;overflow:hidden}main{display:flex}main audio{z-index:1;opacity:.2;transition:all .5s linear}main audio:hover{opacity:.8}canvas{border:0;width:100%;height:100%;display:block;position:fixed;top:0;left:0;overflow:hidden}
+/*# sourceMappingURL=index.595020b3.css.map */
