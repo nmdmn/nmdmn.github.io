@@ -1,0 +1,2 @@
+*{box-sizing:border-box;scroll-behavior:smooth;margin:0;padding:0}main{align-items:center;justify-content:first;flex-direction:column;padding-top:50px;display:flex}main audio{opacity:.2;transition:all .5s linear}main audio:hover{opacity:.8}canvas{z-index:-1;border:0;width:100%;height:100%;display:block;position:fixed;top:0;left:0;overflow:hidden}
+/*# sourceMappingURL=index.b37c4314.css.map */
