@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180"><filter id="grain"><feTurbulence baseFrequency=".82" numOctaves="3" seed="8" stitchTiles="stitch" type="fractalNoise"/><feColorMatrix type="saturate" values="0"/></filter><path fill="#888" d="M0 0h180v180H0Z" filter="url(#grain)"/></svg>
