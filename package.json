@@ -7,9 +7,9 @@
   "license": "MIT",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "rm -rf rel && parcel build --dist-dir rel src/index.html --no-cache",
-    "clean": "rm -rf rel dist",
-    "clearup": "rm -rf node_modules rel dist .parcel-cache"
+    "build": "rm -rf docs && parcel build --dist-dir docs src/index.html --no-cache",
+    "clean": "rm -rf docs dist",
+    "clearup": "rm -rf node_modules docs dist .parcel-cache"
   },
   "devDependencies": {
     "@parcel/transformer-glsl": "^2.14.4",
