@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en" data-loading>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#fafaf8" />
+    <meta name="description" content="Abstract. Four layers of sound, one suspended form. Pads create space, a short lead adds motion, bass brings weight, and a long lead completes the whole." />
+    <title>Abstract — Four layers. One form.</title>
+    <!-- First-paint loader: no stylesheet, font, image or Three.js dependency. -->
+    <style>
+      html[data-loading], html[data-loading] body { margin: 0; background: #fafaf8; }
+      html[data-loading] { overflow-y: hidden; }
+      html[data-loading] body > :not(.startup-loader):not(script):not(noscript) { visibility: hidden; }
+      .startup-loader { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; background: #fafaf8; color: #18191a; }
+      .startup-loader__inner { position: relative; display: grid; justify-items: center; gap: 23px; }
+      .startup-loader__symbol { position: relative; width: 96px; height: 96px; }
+      .startup-loader__mark { width: 68px; height: 68px; overflow: visible; transform-origin: center; transition: transform .8s cubic-bezier(.22,.7,.2,1); }
+      .startup-loader__mark .pyramid-seam { fill: none; stroke: #fafaf8; stroke-width: .9; stroke-linejoin: round; }
+      .startup-loader [hidden] { display: none !important; }
+      .startup-play { position: absolute; inset: 0; display: grid; place-items: center; padding: 0; color: #18191a; border: 1px solid transparent; border-radius: 50%; background: transparent; cursor: default; transition: border-color .45s ease, background .2s ease, box-shadow .2s ease; }
+      .startup-loader.is-ready .startup-play { border-color: #18191a55; cursor: pointer; }
+      .startup-loader.is-ready .startup-play:not(:disabled):hover { border-color: #18191a; background: #18191a05; box-shadow: 0 0 0 5px #18191a04; }
+      .startup-loader.is-ready .startup-play:not(:disabled):active { background: #18191a0c; }
+      .startup-play:focus-visible { outline: 1px solid #549b49; outline-offset: 5px; }
+      .startup-loader__silent { position: absolute; top: calc(100% + 20px); left: 50%; transform: translateX(-50%); padding: 8px; border: 0; background: none; color: #82837f; font: 7px/1.5 ui-monospace, monospace; letter-spacing: .16em; white-space: nowrap; cursor: pointer; }
+      .startup-loader__silent::before { content: ""; position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 88px; height: 1px; background: #18191a26; pointer-events: none; }
+      .startup-loader.is-ready .startup-loader__mark { transform: rotate(-90deg); }
+      .startup-loader.is-ready .startup-loader__track { visibility: hidden; }
+      .startup-loader__label { margin: 0; font: 9px/1.5 ui-monospace, monospace; letter-spacing: .22em; }
+      .startup-loader.is-ready .startup-loader__label { font-size: 11px; }
+      .startup-loader__hint { margin: -12px 0 0; color: #82837f; font: 10px/1.5 ui-monospace, monospace; }
+      .startup-loader__track { width: 88px; height: 1px; background: #18191a1c; }
+      .startup-loader__fill { display: block; height: 100%; background: #549b49; transform: scaleX(var(--load-progress, .05)); transform-origin: left; transition: transform .18s ease; }
+      .startup-loader__status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+      .startup-loader.is-revealing { background: #fff; }
+      .startup-loader.is-revealing .startup-loader__inner { visibility: hidden; }
+      [data-motion="off"] .startup-loader__fill, [data-motion="off"] .startup-loader__mark, [data-motion="off"] .startup-play { transition: none; }
+      @media (prefers-reduced-motion: reduce) { .startup-loader__fill, .startup-loader__mark, .startup-play { transition: none; } }
+    </style>
+    <script>
+      // Even a failed bootstrap download must not trap the visitor in loading.
+      (function () {
+        var boot = window.__startup = { expired: false, timer: null };
+        function watch() {
+          clearTimeout(boot.timer);
+          if (boot.ready || document.hidden || !document.documentElement.hasAttribute("data-loading")) return;
+          boot.timer = setTimeout(function () {
+            boot.expired = true;
+            document.documentElement.removeAttribute("data-loading");
+            document.querySelector(".startup-loader")?.remove();
+            document.body?.classList.remove("scene-ready");
+            document.body?.classList.add("webgl-unavailable");
+            document.querySelectorAll("body > [inert]").forEach(function (element) { element.inert = false; });
+            document.querySelector("main")?.removeAttribute("aria-busy");
+            window.dispatchEvent(new Event("startup-timeout"));
+          }, 20000);
+        }
+        document.addEventListener("visibilitychange", watch);
+        watch();
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link id="experience-styles" rel="stylesheet" href="styles/main.scss" media="print" onload="this.media='all'" />
+    <noscript>
+      <link rel="stylesheet" href="styles/main.scss" />
+      <style>.startup-loader { display: none !important; } html[data-loading] body > :not(.startup-loader) { visibility: visible !important; }</style>
+    </noscript>
+    <script type="module" src="scripts/main.js"></script>
+  </head>
+  <body>
+    <div class="startup-loader" role="status" aria-live="polite" aria-label="Loading the experience">
+      <div class="startup-loader__inner">
+        <div class="startup-loader__symbol">
+          <button class="startup-play" type="button" aria-label="Loading the experience" aria-describedby="startup-hint" aria-hidden="true" disabled>
+            <svg class="startup-loader__mark" viewBox="0 0 48 48" aria-hidden="true">
+              <path fill="currentColor" d="M4 9 28 5 44 12 24 44Z" />
+              <path class="pyramid-seam" d="M4 9 20 17 44 12 M28 5 20 17 24 44" />
+            </svg>
+          </button>
+        </div>
+        <p class="startup-loader__label" aria-hidden="true">LOADING MATTER</p>
+        <p class="startup-loader__hint" id="startup-hint">Preparing sound &amp; sculpture</p>
+        <div class="startup-loader__track" aria-hidden="true"><span class="startup-loader__fill"></span></div>
+        <span class="startup-loader__status">Loading scene assets.</span>
+        <button class="startup-loader__silent" type="button" hidden>ENTER SILENTLY</button>
+      </div>
+    </div>
+    <canvas aria-hidden="true"></canvas>
+    <div class="static-art" aria-hidden="true"><div></div></div>
+    <a class="skip-link" href="#section-0">Skip to experience</a>
+    <header class="header">
+      <a class="wordmark" href="#section-0" aria-label="Abstract, back to the beginning">
+        <svg viewBox="0 0 48 48" aria-hidden="true">
+          <path fill="currentColor" d="M4 9 28 5 44 12 24 44Z" />
+          <path class="pyramid-seam" d="M4 9 20 17 44 12 M28 5 20 17 24 44" />
+        </svg>
+        abstract<span class="wordmark-dot">®</span>
+      </a>
+      <nav class="chapter-nav" aria-label="Sound layers">
+        <a href="#section-0" aria-current="step">Space</a>
+        <a href="#section-1">Structure</a>
+        <a href="#section-2">Weight</a>
+        <a href="#section-3">Core</a>
+      </nav>
+      <div class="experience-controls">
+        <button class="audio-toggle" type="button" aria-pressed="false" title="Mute sound" hidden>
+          <span class="status-dot" aria-hidden="true"></span><span data-audio-label>Sound on</span>
+        </button>
+        <button class="motion-toggle" type="button" aria-pressed="false" title="Pause ambient motion">
+          <span class="status-dot" aria-hidden="true"></span><span data-motion-label>Motion on</span>
+        </button>
+      </div>
+    </header>
+
+    <main id="experience" tabindex="0" aria-label="Abstract: four layers of sound and form">
+      <section id="section-0" class="chapter" aria-labelledby="title-0" tabindex="-1" data-name="Pads">
+        <div class="projection projection-left" data-projection="0">
+          <div class="projection-inner">
+            <p class="eyebrow"><span class="tiny-cross">+</span> I / Pads — the atmosphere</p>
+            <h1 id="title-0">Space first.<br /><em>Then structure.</em></h1>
+            <p class="body-copy">Voice leading creates the harmony.<br />A wide foundation beneath.</p>
+            <div class="sound-design">
+              <p class="instrument-credit">Instrument: <strong>Massive X</strong></p>
+              <p class="preset-label" id="pad-presets">Pad presets · six voices</p>
+              <ol class="preset-list" aria-labelledby="pad-presets">
+                <li>Lola</li><li>Cathedralium</li><li>Bohrium</li>
+                <li>Claws</li><li>Anxious Flutter</li><li>Mumble Grow</li>
+              </ol>
+            </div>
+            <a class="text-link" href="#section-1">Add the structure <span aria-hidden="true">→</span></a>
+            <div class="projection-meta"><span>LAYER 01 — SPACE</span><span>PADS</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-1" class="chapter" aria-labelledby="title-1" tabindex="-1" data-name="Short lead">
+        <div class="projection projection-right" data-projection="1">
+          <div class="projection-inner">
+            <p class="eyebrow"><span class="tiny-cross">+</span> II / Melody — the motion</p>
+            <h2 id="title-1">A brief spark.<br /><em>A moving pulse.</em></h2>
+            <p class="body-copy">Quick notes repeat a melodic motif.<br />Their sharp attacks give the pads motion.</p>
+            <div class="sound-design">
+              <p class="instrument-credit">Instrument: <strong>Massive X</strong></p>
+              <p class="preset-credit"><span>Preset</span> Becker</p>
+            </div>
+            <a class="text-link" href="#section-2">Add the weight <span aria-hidden="true">↓</span></a>
+            <div class="projection-meta"><span>LAYER 02 — SRUCTURE</span><span>PADS + MELODY</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-2" class="chapter" aria-labelledby="title-2" tabindex="-1" data-name="Bass">
+        <div class="projection projection-signal" data-projection="2">
+          <div class="projection-inner">
+            <p class="eyebrow"><span class="tiny-cross">+</span> III / Bass &amp Kick — the foundation</p>
+            <h2 id="title-2">Depth below.<br /><em>Weight within.</em></h2>
+            <p class="body-copy">Low notes anchor the harmony.<br />Depth and pressure give the form weight.</p>
+            <div class="sound-design">
+              <p class="instrument-credit">Instrument: <strong>Massive X</strong></p>
+              <p class="preset-credit"><span>Preset</span> Art Dual</p>
+            </div>
+            <a class="text-link" href="#section-3">Add the core <span aria-hidden="true">↗︎</span></a>
+            <div class="signal-reading"><span class="signal-line" aria-hidden="true"></span><span>LAYER 03 — WEIGHT</span><span>PADS + MELODY + BASS + KICK</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-3" class="chapter" aria-labelledby="title-3" tabindex="-1" data-name="Long lead">
+        <div class="projection projection-release" data-projection="3">
+          <div class="projection-inner">
+            <div class="frame-heading"><span>LAYER 04 — CORE</span><span>PADS + MELODY + BASS + KICK + LEAD</span></div>
+            <p class="eyebrow">IV / Lead — the glue</p>
+            <h2 id="title-3">A longer voice.<br /><em>A whole world.</em></h2>
+            <div class="well-window" aria-hidden="true"></div>
+            <p class="body-copy">Four layers. One theme.</p>
+            <div class="sound-design">
+              <p class="instrument-credit">Instrument: <strong>Massive X</strong></p>
+              <p class="preset-credit"><span>Preset</span> The End</p>
+            </div>
+            <a class="text-link" href="#section-0">Return to the pads <span aria-hidden="true">↙︎</span></a>
+            <i class="frame-corner corner-tl" aria-hidden="true"></i><i class="frame-corner corner-tr" aria-hidden="true"></i>
+            <i class="frame-corner corner-bl" aria-hidden="true"></i><i class="frame-corner corner-br" aria-hidden="true"></i>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <nav class="chapter-rail" aria-label="Sound layer index">
+      <a href="#section-0" aria-label="01 Pads" aria-current="step"><span>01</span><i></i></a>
+      <a href="#section-1" aria-label="02 Short lead"><span>02</span><i></i></a>
+      <a href="#section-2" aria-label="03 Bass"><span>03</span><i></i></a>
+      <a href="#section-3" aria-label="04 Long lead"><span>04</span><i></i></a>
+    </nav>
+    <footer class="status-bar" aria-label="Experience progress">
+      <div class="current-chapter"><span class="status-dot" aria-hidden="true"></span><span data-chapter-label>01 / Pads</span></div>
+      <span class="status-center">Abstract — Four layers. One form.</span>
+      <span class="status-end">Scroll to build the mix <span aria-hidden="true">↕</span></span>
+      <div class="journey-line" aria-hidden="true"></div>
+    </footer>
+  </body>
+</html>
